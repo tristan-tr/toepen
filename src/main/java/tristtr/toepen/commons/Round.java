@@ -3,12 +3,13 @@ package tristtr.toepen.commons;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Data
 @Entity
-public class Round {
+public class Round implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

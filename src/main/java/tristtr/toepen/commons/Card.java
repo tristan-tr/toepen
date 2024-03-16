@@ -4,9 +4,11 @@ import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @Embeddable
-public class Card {
+public class Card implements Serializable {
     @Id
     private Suit suit;
     @Id
