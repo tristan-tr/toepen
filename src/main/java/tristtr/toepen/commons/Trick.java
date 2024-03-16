@@ -12,7 +12,7 @@ public class Trick {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ElementCollection
     private List<Card> cardsPlayed;
 
     @ManyToOne

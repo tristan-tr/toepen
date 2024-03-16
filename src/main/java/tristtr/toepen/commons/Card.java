@@ -1,11 +1,11 @@
 package tristtr.toepen.commons;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.Embeddable;
 import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-@Entity
+@Embeddable
 public class Card {
     @Id
     private Suit suit;

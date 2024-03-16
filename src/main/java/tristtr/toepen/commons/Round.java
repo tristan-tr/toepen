@@ -27,7 +27,7 @@ public class Round {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "round")
     private List<Trick> tricks; // 4 tricks in a round
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ElementCollection
     private List<Card> deck;
 
     // TODO: list of who toeped?
