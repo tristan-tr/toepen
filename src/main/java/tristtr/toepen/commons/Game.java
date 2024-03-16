@@ -1,4 +1,4 @@
-package tristtr.toepen;
+package tristtr.toepen.commons;
 
 import jakarta.persistence.*;
 import lombok.Data;
