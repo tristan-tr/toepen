@@ -7,6 +7,7 @@ import java.util.Set;
 
 @Data
 public class Game {
+    String name;
     List<Round> rounds;
     Set<Player> players;
 }
