@@ -18,9 +18,13 @@ public class GameManager {
         this.games = new HashMap<>();
     }
 
+    public Game getGame(String gameName) {
+        return games.get(gameName);
+    }
+
     public Game createGame(String gameName) {
-        Game game = new Game();
-        game.setName(gameName);
+        Game game = new Game(gameName);
+
         games.put(gameName, game);
         return game;
     }
