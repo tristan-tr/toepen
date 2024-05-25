@@ -1,8 +1,8 @@
 package tristtr.toepen.exceptions;
 
-public class GameAlreadyExistsException extends Exception {
+public class GameAlreadyExistsException extends RuntimeException {
+
     public GameAlreadyExistsException() {
-        super("Game already exists");
     }
 
     public GameAlreadyExistsException(String message) {
