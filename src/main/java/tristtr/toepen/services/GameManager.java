@@ -38,7 +38,7 @@ public class GameManager {
             throw new IllegalArgumentException("Game name must be between 1 and 16 characters long");
         }
         if (games.containsKey(gameName)) {
-            throw new GameAlreadyExistsException();
+            throw new GameAlreadyExistsException("Game already exists with name: " + gameName);
         }
 
         Game game = new Game(gameName);

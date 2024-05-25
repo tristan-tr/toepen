@@ -2,13 +2,11 @@ package tristtr.toepen.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tristtr.toepen.services.GameManager;
 
-@RestController("/game")
+@RestController
+@RequestMapping("/game")
 public class GameController {
 
     private GameManager gameManager;
