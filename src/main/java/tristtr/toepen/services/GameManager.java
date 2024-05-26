@@ -1,5 +1,6 @@
 package tristtr.toepen.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tristtr.toepen.commons.Game;
 import tristtr.toepen.commons.Player;
@@ -13,9 +14,14 @@ import java.util.Map;
  */
 @Service
 public class GameManager {
+
+    private SessionManager sessionManager;
     private Map<String, Game> games;
 
-    public GameManager() {
+    @Autowired
+    public GameManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+
         this.games = new HashMap<>();
     }
 
@@ -27,7 +33,10 @@ public class GameManager {
      * Creates a new game with the given name.
      * Also makes the creator of the game join it.
      * If the player is already in a game, they will be removed from that game.
-     *
+     * <p>
+     * Assumes that the game name and player name stored in the session is valid.
+     * Game name in the session can be null if the player is not in a game.
+     * </p>
      * @param gameName Name of the game
      * @return The created game
      * @throws IllegalArgumentException   If the game name is null, empty, or longer than 16 characters
@@ -41,14 +50,34 @@ public class GameManager {
             throw new GameAlreadyExistsException("Game already exists with name: " + gameName);
         }
 
-        Game game = new Game(gameName);
+        // TODO: Reuse the player object from a shared context instead of creating a new one
+        Player player = new Player(sessionManager.getPlayerName());
 
+        // If the player is already in a game, they will be removed from that game.
+        if (sessionManager.getGameName() != null) {
+            Game oldGame = getGame(sessionManager.getGameName());
+            leaveGame(oldGame, player);
+            // We don't have to update the session info here because we do that when we join the new game
+        }
+
+        // Creates a new game with the given name.
+        Game game = new Game(gameName);
         games.put(gameName, game);
+
+        // Also makes the creator of the game join it.
+        joinGame(game, player);
+        sessionManager.setGameName(gameName);
+
         return game;
     }
 
     public Player joinGame(Game game, Player player) {
         game.getPlayers().add(player);
+        return player;
+    }
+
+    public Player leaveGame(Game game, Player player) {
+        game.getPlayers().remove(player);
         return player;
     }
 }
