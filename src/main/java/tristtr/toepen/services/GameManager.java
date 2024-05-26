@@ -30,6 +30,18 @@ public class GameManager {
     }
 
     /**
+     * Asserts that the game name is valid. A valid game name is between 1 and 16 characters long.
+     *
+     * @param gameName Name of the game
+     * @throws IllegalArgumentException If the game name is null, empty, or longer than 16 characters
+     */
+    public void assertValidGameName(String gameName) throws IllegalArgumentException {
+        if (gameName == null || gameName.isEmpty() || gameName.length() > 16) {
+            throw new IllegalArgumentException("Game name must be between 1 and 16 characters long");
+        }
+    }
+
+    /**
      * Creates a new game with the given name.
      * Also makes the creator of the game join it.
      * If the player is already in a game, they will be removed from that game.
@@ -39,13 +51,11 @@ public class GameManager {
      * </p>
      * @param gameName Name of the game
      * @return The created game
-     * @throws IllegalArgumentException   If the game name is null, empty, or longer than 16 characters
+     * @throws IllegalArgumentException   If the game name is invalid, see {@link #assertValidGameName(String)}
      * @throws GameAlreadyExistsException If a game with the given name already exists
      */
     public Game createGame(String gameName) throws IllegalArgumentException, GameAlreadyExistsException {
-        if (gameName == null || gameName.isEmpty() || gameName.length() > 16) {
-            throw new IllegalArgumentException("Game name must be between 1 and 16 characters long");
-        }
+        assertValidGameName(gameName);
         if (games.containsKey(gameName)) {
             throw new GameAlreadyExistsException("Game already exists with name: " + gameName);
         }

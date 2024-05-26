@@ -1,9 +1,9 @@
 package tristtr.toepen.services;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -11,6 +11,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import tristtr.toepen.commons.Game;
 import tristtr.toepen.exceptions.GameAlreadyExistsException;
+
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,17 +26,27 @@ class GameManagerTest {
     @InjectMocks
     private GameManager gameManager;
 
-    @BeforeEach
-    void setUp() {
-        Mockito.when(sessionManager.getPlayerName()).thenReturn(PLAYER_NAME);
+    @MethodSource
+    static Stream<String> invalidGameNames() {
+        return Stream.of(null, "", "0123456789ABCDEFG");
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidGameNames")
+    void testAssertValidGameName(String gameName) {
+        // * @throws IllegalArgumentException   If the game name is null, empty, or longer than 16 characters
+        assertThrows(IllegalArgumentException.class, () -> gameManager.assertValidGameName(gameName));
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidGameNames")
+    void testCreateGameInvalidGameName(String gameName) {
+        // * @throws IllegalArgumentException   If the game name is null, empty, or longer than 16 characters
+        assertThrows(IllegalArgumentException.class, () -> gameManager.createGame(gameName));
     }
 
     @Test
     void testCreateGamePreconditions() {
-        // * @throws IllegalArgumentException   If the game name is null, empty, or longer than 16 characters
-        assertThrows(IllegalArgumentException.class, () -> gameManager.createGame(null));
-        assertThrows(IllegalArgumentException.class, () -> gameManager.createGame(""));
-        assertThrows(IllegalArgumentException.class, () -> gameManager.createGame("0123456789ABCDEFG"));
         // * @throws GameAlreadyExistsException If a game with the given name already exists
         gameManager.createGame("game1");
         assertThrows(GameAlreadyExistsException.class, () -> gameManager.createGame("game1"));
@@ -43,6 +55,8 @@ class GameManagerTest {
     @ParameterizedTest
     @ValueSource(strings = {"1", "0123456789ABCDEF"})
     void testCreateGame(String gameName) {
+        Mockito.when(sessionManager.getPlayerName()).thenReturn(PLAYER_NAME);
+
         // * Creates a new game with the given name.
         Game game = gameManager.createGame(gameName);
         assertEquals(game, gameManager.getGame(gameName));
