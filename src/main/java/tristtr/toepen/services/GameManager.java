@@ -71,11 +71,26 @@ public class GameManager {
         return game;
     }
 
+    /**
+     * Adds a player to the game.
+     * This does not update session info.
+     *
+     * @param game   the game to join
+     * @param player the player to join the game
+     * @return the player that joined the game
+     */
     public Player joinGame(Game game, Player player) {
         game.getPlayers().add(player);
         return player;
     }
 
+    /**
+     * Removes a player from the game.
+     * This does not update session info.
+     * @param game the game to leave
+     * @param player the player to leave the game
+     * @return the player that left the game
+     */
     public Player leaveGame(Game game, Player player) {
         game.getPlayers().remove(player);
         return player;
