@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import tristtr.toepen.commons.Game;
 import tristtr.toepen.commons.Player;
 import tristtr.toepen.exceptions.GameAlreadyExistsException;
+import tristtr.toepen.validators.ValidationService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +16,13 @@ import java.util.Map;
 @Service
 public class GameManager {
 
+    private ValidationService validationService;
     private SessionManager sessionManager;
     private Map<String, Game> games;
 
     @Autowired
-    public GameManager(SessionManager sessionManager) {
+    public GameManager(ValidationService validationService, SessionManager sessionManager) {
+        this.validationService = validationService;
         this.sessionManager = sessionManager;
 
         this.games = new HashMap<>();
@@ -30,32 +33,18 @@ public class GameManager {
     }
 
     /**
-     * Asserts that the game name is valid. A valid game name is between 1 and 16 characters long.
-     *
-     * @param gameName Name of the game
-     * @throws IllegalArgumentException If the game name is null, empty, or longer than 16 characters
-     */
-    public void assertValidGameName(String gameName) throws IllegalArgumentException {
-        if (gameName == null || gameName.isEmpty() || gameName.length() > 16) {
-            throw new IllegalArgumentException("Game name must be between 1 and 16 characters long");
-        }
-    }
-
-    /**
      * Creates a new game with the given name.
      * Also makes the creator of the game join it.
      * If the player is already in a game, they will be removed from that game.
-     * <p>
-     * Assumes that the game name and player name stored in the session is valid.
-     * Game name in the session can be null if the player is not in a game.
-     * </p>
      * @param gameName Name of the game
      * @return The created game
-     * @throws IllegalArgumentException   If the game name is invalid, see {@link #assertValidGameName(String)}
+     * @throws IllegalArgumentException   If the game name is invalid, see {@link ValidationService#assertValidGameName(String)}
+     * <br>                               If the player name in the session is invalid, see {@link ValidationService#assertValidPlayerName(String)}
      * @throws GameAlreadyExistsException If a game with the given name already exists
      */
     public Game createGame(String gameName) throws IllegalArgumentException, GameAlreadyExistsException {
-        assertValidGameName(gameName);
+        validationService.assertValidGameName(gameName);
+        validationService.assertValidPlayerName(sessionManager.getPlayerName());
         if (games.containsKey(gameName)) {
             throw new GameAlreadyExistsException("Game already exists with name: " + gameName);
         }
